@@ -49,6 +49,14 @@ import {HeatingState} from '../state/heating-state';
           </select>
           <button
             type="button"
+            (click)="state.showNewProtocolModal.set(true)"
+            class="inline-flex items-center gap-2 px-3 py-2 text-xs font-medium text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 transition-colors whitespace-nowrap shrink-0"
+          >
+            <mat-icon class="!text-[16px] !w-4 !h-4">add</mat-icon>
+            Nowy protokół
+          </button>
+          <button
+            type="button"
             (click)="applyNormPreset()"
             class="inline-flex items-center gap-2 px-4 py-2 text-xs font-medium text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 transition-colors whitespace-nowrap shrink-0"
           >

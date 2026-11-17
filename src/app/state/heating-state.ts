@@ -63,6 +63,7 @@ export class HeatingState {
   readonly browserPermission = signal<NotificationPermission | 'unsupported'>('default');
   readonly toast = signal<ToastBanner | null>(null);
   readonly showNewProtocolModal = signal<boolean>(false);
+  readonly showNewMeasurementModal = signal<boolean>(false);
   readonly showPrintModal = signal<boolean>(false);
   readonly showServerInstallModal = signal<boolean>(false);
 

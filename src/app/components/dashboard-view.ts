@@ -95,6 +95,16 @@ function optionalMeterValidator(control: AbstractControl): ValidationErrors | nu
             <mat-icon class="!text-[16px] !w-4 !h-4">print</mat-icon>
             Protokół PDF
           </button>
+
+          <button
+            type="button"
+            (click)="state.showNewProtocolModal.set(true)"
+            class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 transition-colors whitespace-nowrap shrink-0"
+            data-testid="dashboard-new-protocol-btn"
+          >
+            <mat-icon class="!text-[16px] !w-4 !h-4">add</mat-icon>
+            Nowy protokół
+          </button>
         </div>
       </div>
 

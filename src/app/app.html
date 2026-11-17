@@ -66,11 +66,12 @@
       <div class="shrink-0">
         <button
           type="button"
-          (click)="state.showNewProtocolModal.set(true)"
+          (click)="state.showNewMeasurementModal.set(true)"
           class="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-white bg-slate-900 rounded-lg hover:bg-slate-800 transition-colors whitespace-nowrap shrink-0"
+          data-testid="header-new-measurement-btn"
         >
-          <mat-icon class="!text-[16px] !w-4 !h-4">add</mat-icon>
-          Nowy protokół
+          <mat-icon class="!text-[16px] !w-4 !h-4">add_task</mat-icon>
+          Nowy pomiar
         </button>
       </div>
     </div>
@@ -232,6 +233,10 @@
   </footer>
 
   <!-- Modals -->
+  @if (state.showNewMeasurementModal()) {
+    <app-new-measurement-modal />
+  }
+
   @if (state.showNewProtocolModal()) {
     <app-new-protocol-modal />
   }

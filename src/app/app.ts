@@ -2,6 +2,7 @@ import {ChangeDetectionStrategy, Component, effect, inject} from '@angular/core'
 import {MatIconModule} from '@angular/material/icon';
 import {DashboardView} from './components/dashboard-view';
 import {MeasurementLogView} from './components/measurement-log-view';
+import {NewMeasurementModal} from './components/new-measurement-modal';
 import {NewProtocolModal} from './components/new-protocol-modal';
 import {NormParametersView} from './components/norm-parameters-view';
 import {NotificationsView} from './components/notifications-view';
@@ -19,6 +20,7 @@ import {HeatingState} from './state/heating-state';
     NormParametersView,
     MeasurementLogView,
     NotificationsView,
+    NewMeasurementModal,
     NewProtocolModal,
     PrintProtocolModal,
     ServerInstallModal,
