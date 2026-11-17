@@ -1,0 +1,405 @@
+<div class="min-h-screen flex flex-col bg-slate-50 text-slate-900">
+  <!-- Strict 3-Zone Top Bar Contract -->
+  <header class="no-print bg-white border-b border-slate-200 sticky top-0 z-30">
+    <div class="max-w-[1440px] mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-8">
+      <!-- Zone 1: Single-line Wordmark -->
+      <button
+        type="button"
+        (click)="state.setView('dashboard')"
+        class="font-display text-lg font-bold tracking-tight text-slate-900 whitespace-nowrap shrink-0 text-left focus-visible:outline-2 focus-visible:outline-orange-600 rounded"
+      >
+        TermoJastrych
+      </button>
+
+      <!-- Zone 2: 4 Single-line Text Navigation Links -->
+      <nav class="hidden md:flex items-center gap-6 text-sm font-medium" aria-label="Nawigacja główna">
+        <button
+          type="button"
+          (click)="state.setView('dashboard')"
+          class="py-1 border-b-2 transition-colors whitespace-nowrap shrink-0"
+          [class.border-orange-600]="state.activeView() === 'dashboard'"
+          [class.text-slate-900]="state.activeView() === 'dashboard'"
+          [class.border-transparent]="state.activeView() !== 'dashboard'"
+          [class.text-slate-600]="state.activeView() !== 'dashboard'"
+        >
+          Pulpit i Wykresy
+        </button>
+
+        <button
+          type="button"
+          (click)="state.setView('parameters')"
+          class="py-1 border-b-2 transition-colors whitespace-nowrap shrink-0"
+          [class.border-orange-600]="state.activeView() === 'parameters'"
+          [class.text-slate-900]="state.activeView() === 'parameters'"
+          [class.border-transparent]="state.activeView() !== 'parameters'"
+          [class.text-slate-600]="state.activeView() !== 'parameters'"
+        >
+          Parametry Normy
+        </button>
+
+        <button
+          type="button"
+          (click)="state.setView('log')"
+          class="py-1 border-b-2 transition-colors whitespace-nowrap shrink-0"
+          [class.border-orange-600]="state.activeView() === 'log'"
+          [class.text-slate-900]="state.activeView() === 'log'"
+          [class.border-transparent]="state.activeView() !== 'log'"
+          [class.text-slate-600]="state.activeView() !== 'log'"
+        >
+          Dziennik Pomiarów
+        </button>
+
+        <button
+          type="button"
+          (click)="state.setView('notifications')"
+          class="py-1 border-b-2 transition-colors whitespace-nowrap shrink-0"
+          [class.border-orange-600]="state.activeView() === 'notifications'"
+          [class.text-slate-900]="state.activeView() === 'notifications'"
+          [class.border-transparent]="state.activeView() !== 'notifications'"
+          [class.text-slate-600]="state.activeView() !== 'notifications'"
+        >
+          Powiadomienia ({{ state.unreadNotificationCount() }})
+        </button>
+      </nav>
+
+      <!-- Zone 3: Single Primary Action -->
+      <div class="shrink-0">
+        <button
+          type="button"
+          (click)="state.showNewProtocolModal.set(true)"
+          class="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-white bg-slate-900 rounded-lg hover:bg-slate-800 transition-colors whitespace-nowrap shrink-0"
+        >
+          <mat-icon class="!text-[16px] !w-4 !h-4">add</mat-icon>
+          Nowy protokół
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Navigation Strip (compact, single-row, fits 390px cleanly) -->
+    <nav
+      class="md:hidden border-t border-slate-200 px-3 py-2 flex items-center justify-between gap-2 text-xs font-medium bg-white"
+      aria-label="Nawigacja mobilna"
+    >
+      <button
+        type="button"
+        (click)="state.setView('dashboard')"
+        class="whitespace-nowrap shrink-0 py-1 px-1"
+        [class.text-orange-700]="state.activeView() === 'dashboard'"
+        [class.font-semibold]="state.activeView() === 'dashboard'"
+        [class.text-slate-600]="state.activeView() !== 'dashboard'"
+      >
+        Pulpit
+      </button>
+      <button
+        type="button"
+        (click)="state.setView('parameters')"
+        class="whitespace-nowrap shrink-0 py-1 px-1"
+        [class.text-orange-700]="state.activeView() === 'parameters'"
+        [class.font-semibold]="state.activeView() === 'parameters'"
+        [class.text-slate-600]="state.activeView() !== 'parameters'"
+      >
+        Parametry
+      </button>
+      <button
+        type="button"
+        (click)="state.setView('log')"
+        class="whitespace-nowrap shrink-0 py-1 px-1"
+        [class.text-orange-700]="state.activeView() === 'log'"
+        [class.font-semibold]="state.activeView() === 'log'"
+        [class.text-slate-600]="state.activeView() !== 'log'"
+      >
+        Dziennik
+      </button>
+      <button
+        type="button"
+        (click)="state.setView('notifications')"
+        class="whitespace-nowrap shrink-0 py-1 px-1"
+        [class.text-orange-700]="state.activeView() === 'notifications'"
+        [class.font-semibold]="state.activeView() === 'notifications'"
+        [class.text-slate-600]="state.activeView() !== 'notifications'"
+      >
+        Powiadomienia ({{ state.unreadNotificationCount() }})
+      </button>
+    </nav>
+  </header>
+
+  <!-- Toast Banner -->
+  @if (state.toast(); as toast) {
+    <div
+      class="no-print fixed bottom-4 left-4 right-4 sm:left-auto sm:bottom-5 sm:right-5 z-40 sm:max-w-md bg-white border rounded-xl shadow-lg p-4 flex items-start gap-3"
+      role="status"
+      aria-live="polite"
+      [class.border-emerald-300]="toast.severity === 'success'"
+      [class.border-amber-300]="toast.severity === 'warning'"
+      [class.border-rose-300]="toast.severity === 'error'"
+      [class.border-slate-300]="toast.severity === 'info'"
+    >
+      <div class="flex-1 min-w-0">
+        <p class="text-xs font-semibold text-slate-900">{{ toast.title }}</p>
+        <p class="text-xs text-slate-600 mt-0.5 leading-relaxed">{{ toast.message }}</p>
+      </div>
+      <button
+        type="button"
+        (click)="state.dismissToast()"
+        aria-label="Zamknij komunikat"
+        class="text-slate-400 hover:text-slate-700 p-0.5"
+      >
+        <mat-icon class="!text-[16px] !w-4 !h-4">close</mat-icon>
+      </button>
+    </div>
+  }
+
+  <!-- Main Content -->
+  <main class="no-print flex-1 max-w-[1440px] w-full mx-auto px-4 sm:px-6 py-6">
+    @switch (state.activeView()) {
+      @case ('dashboard') {
+        <app-dashboard-view />
+      }
+      @case ('parameters') {
+        <app-norm-parameters-view />
+      }
+      @case ('log') {
+        <app-measurement-log-view />
+      }
+      @case ('notifications') {
+        <app-notifications-view />
+      }
+    }
+  </main>
+
+  <!-- Offline Connectivity Indicator -->
+  @if (!pwa.isOnline()) {
+    <div
+      class="no-print fixed bottom-4 left-4 z-40 flex items-center gap-2 rounded-lg bg-amber-600 px-3 py-2 text-xs font-medium text-white shadow-lg"
+      role="status"
+      aria-live="polite"
+      data-testid="offline-indicator"
+    >
+      <mat-icon class="!text-[16px] !w-4 !h-4">cloud_off</mat-icon>
+      <span>Tryb offline — zapisywane dane i krzywe działają z pamięci lokalnej.</span>
+    </div>
+  }
+
+  <!-- Minimal Functional Footer -->
+  <footer class="no-print border-t border-slate-200 bg-white mt-auto">
+    <div class="max-w-[1440px] mx-auto px-4 sm:px-6 py-3 flex flex-wrap items-center justify-between gap-4 text-xs text-slate-500">
+      <span>TermoJastrych · Procedura wygrzewania jastrychu zgodna z normą PN-EN 1264-4</span>
+      <div class="flex flex-wrap items-center gap-4">
+        @if (!pwa.isInstalled()) {
+          <button
+            type="button"
+            (click)="pwa.promptInstall()"
+            class="inline-flex items-center gap-1.5 text-slate-700 hover:text-slate-950 font-medium underline"
+            data-testid="footer-pwa-install"
+          >
+            <mat-icon class="!text-[15px] !w-4 !h-4">install_mobile</mat-icon>
+            @if (pwa.isInstallable()) {
+              Zainstaluj jako aplikację (PWA)
+            } @else {
+              Jak zainstalować na telefonie (PWA)
+            }
+          </button>
+        }
+        <button
+          type="button"
+          (click)="state.showServerInstallModal.set(true)"
+          class="inline-flex items-center gap-1.5 text-slate-700 hover:text-slate-950 font-medium underline"
+          data-testid="footer-server-install"
+        >
+          <mat-icon class="!text-[15px] !w-4 !h-4">dns</mat-icon>
+          Instrukcja serwera (Proxmox)
+        </button>
+        <button
+          type="button"
+          (click)="state.clearDemoData()"
+          class="inline-flex items-center gap-1.5 text-rose-700 hover:text-rose-900 font-medium underline"
+          data-testid="footer-clear-demo"
+        >
+          <mat-icon class="!text-[15px] !w-4 !h-4">delete_sweep</mat-icon>
+          Usuń dane testowe / demo
+        </button>
+        <button
+          type="button"
+          (click)="state.resetDemoData()"
+          class="inline-flex items-center gap-1.5 text-slate-500 hover:text-slate-900 underline"
+          data-testid="footer-reset-demo"
+        >
+          <mat-icon class="!text-[15px] !w-4 !h-4">restore</mat-icon>
+          Przywróć dane wzorcowe
+        </button>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Modals -->
+  @if (state.showNewProtocolModal()) {
+    <app-new-protocol-modal />
+  }
+
+  @if (state.showPrintModal()) {
+    <app-print-protocol-modal />
+  }
+
+  @if (pwa.showIOSGuide()) {
+    <div
+      class="no-print fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="pwa-guide-title"
+      data-testid="pwa-install-guide-modal"
+    >
+      <div class="w-full max-w-md rounded-xl bg-white border border-slate-200 p-6 shadow-xl">
+        <div class="flex items-start justify-between gap-4 pb-3 border-b border-slate-200">
+          <div>
+            <h2 id="pwa-guide-title" class="text-base font-bold text-slate-900">
+              Instalacja TermoJastrych na telefonie (PWA)
+            </h2>
+            <p class="text-xs text-slate-500 mt-0.5">
+              Wymagana do otrzymywania powiadomień Web Push na iPhone oraz dla ikony na pulpicie.
+            </p>
+          </div>
+          <button
+            type="button"
+            (click)="pwa.showIOSGuide.set(false)"
+            aria-label="Zamknij instrukcję instalacji"
+            class="text-slate-400 hover:text-slate-700 p-1"
+          >
+            <mat-icon class="!text-[18px] !w-[18px] !h-[18px]">close</mat-icon>
+          </button>
+        </div>
+
+        <div class="mt-4 space-y-3 text-xs text-slate-700 leading-relaxed">
+          <div class="p-3 rounded-lg bg-slate-50 border border-slate-200 space-y-1.5">
+            <p class="font-semibold text-slate-900">iPhone / iPad (Safari, iOS 16.4+)</p>
+            <p>1. Otwórz stronę bezpośrednio w przeglądarce <strong>Safari</strong>.</p>
+            <p>2. Dotknij ikony <strong>Udostępnij</strong> (kwadrat ze strzałką w górę).</p>
+            <p>3. Wybierz <strong>Dodaj do ekranu początkowego</strong> i zatwierdź.</p>
+            <p>4. Uruchom TermoJastrych z nowej ikony na pulpicie i włącz Web Push.</p>
+          </div>
+
+          <div class="p-3 rounded-lg bg-slate-50 border border-slate-200 space-y-1.5">
+            <p class="font-semibold text-slate-900">Android (Edge, Chrome lub Opera)</p>
+            <p>1. W <strong>Edge</strong> / <strong>Chrome</strong> dotknij menu (≡ lub ⋮) i wybierz <strong>Dodaj do telefonu</strong> / <strong>Zainstaluj aplikację</strong>.</p>
+            <p>2. W <strong>Operze</strong> dotknij menu ⋮ i wybierz <strong>Ekran główny</strong> / <strong>Zainstaluj</strong> (włącz też zgodę na powiadomienia bez blokady reklam dla tej strony).</p>
+            <p>3. W ustawieniach Androida (Aplikacje → Edge/Opera → Bateria) ustaw <strong>Bez ograniczeń</strong>, aby telefon nie usypiał powiadomień Push w tle.</p>
+          </div>
+        </div>
+
+        <button
+          type="button"
+          (click)="pwa.showIOSGuide.set(false)"
+          class="mt-5 w-full py-2.5 text-xs font-semibold text-white bg-slate-900 rounded-lg hover:bg-slate-800 transition-colors"
+        >
+          Zamknij instrukcję
+        </button>
+      </div>
+    </div>
+  }
+
+  @if (state.showServerInstallModal()) {
+    <div
+      class="no-print fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="server-install-title"
+      data-testid="server-install-modal"
+    >
+      <div class="w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-xl bg-white border border-slate-200 p-6 shadow-xl">
+        <div class="flex items-start justify-between gap-4 pb-3 border-b border-slate-200">
+          <div>
+            <h2 id="server-install-title" class="text-base font-bold text-slate-900">
+              Instalacja TermoJastrych na własnym serwerze Proxmox VE (LXC)
+            </h2>
+            <p class="text-xs text-slate-500 mt-0.5">
+              Pełna instrukcja uruchomienia 24/7 z serwerem Web Push (VAPID) i HTTPS dla Androida (Edge / Opera).
+            </p>
+          </div>
+          <button
+            type="button"
+            (click)="state.showServerInstallModal.set(false)"
+            aria-label="Zamknij instrukcję Proxmox"
+            class="text-slate-400 hover:text-slate-700 p-1"
+            data-testid="server-install-close"
+          >
+            <mat-icon class="!text-[18px] !w-[18px] !h-[18px]">close</mat-icon>
+          </button>
+        </div>
+
+        <div class="mt-4 space-y-3 text-xs text-slate-700 leading-relaxed">
+          <div class="p-3 rounded-lg bg-amber-50 border border-amber-200 text-amber-950">
+            <strong>Ważne dla Androida (Edge / Opera):</strong> Powiadomienia Web Push oraz instalacja PWA wymagają bezpiecznego adresu <strong>HTTPS</strong>. Otwarcie strony po samym <code>http://192.168.x.x:4000</code> zablokuje rejestrację powiadomień push.
+          </div>
+
+          <div class="p-3 rounded-lg bg-slate-50 border border-slate-200 space-y-1.5">
+            <p class="font-semibold text-slate-900">1. Utworzenie kontenera LXC w Shellu hosta Proxmox (z obsługą Tailscale)</p>
+            <p>W <strong>Proxmox Node → Shell</strong> utwórz kontener Debian 12 (np. ID <code>120</code>) i włącz <code>/dev/net/tun</code>:</p>
+            <pre class="p-2.5 rounded bg-slate-900 text-slate-100 font-mono text-[11px] overflow-x-auto">pveam update
+TEMPLATE=$(pveam available --section system | awk '/debian-12-standard/&#123;print $2; exit&#125;')
+pveam download local "$TEMPLATE"
+pct create 120 "local:vztmpl/$TEMPLATE" --hostname termojastrych \
+  --cores 2 --memory 2048 --swap 512 --rootfs local-lvm:8 \
+  --net0 name=eth0,bridge=vmbr0,ip=dhcp --features nesting=1 --unprivileged 1
+printf 'lxc.cgroup2.devices.allow: c 10:200 rwm\nlxc.mount.entry: /dev/net/tun dev/net/tun none bind,create=file\n' &gt;&gt; /etc/pve/lxc/120.conf
+pct start 120 &amp;&amp; pct enter 120</pre>
+          </div>
+
+          <div class="p-3 rounded-lg bg-slate-50 border border-slate-200 space-y-1.5">
+            <p class="font-semibold text-slate-900">2. Instalacja Node.js 22, wgranie plików i budowanie w LXC</p>
+            <p>Najpierw pobierz kod projektu (przez <code>git clone</code> z GitHuba albo rozpakuj paczkę <code>.zip</code> do <code>/opt/termojastrych</code>):</p>
+            <pre class="p-2.5 rounded bg-slate-900 text-slate-100 font-mono text-[11px] overflow-x-auto">apt update &amp;&amp; apt install -y curl git unzip
+curl -fsSL https://deb.nodesource.com/setup_22.x | bash -
+apt install -y nodejs
+mkdir -p /opt/termojastrych
+# wariant A (GitHub): git clone URL_REPO /opt/termojastrych
+# wariant B (ZIP):    unzip /root/projekt.zip -d /opt/termojastrych
+cd /opt/termojastrych &amp;&amp; npm install &amp;&amp; npm run build</pre>
+          </div>
+
+          <div class="p-3 rounded-lg bg-slate-50 border border-slate-200 space-y-1.5">
+            <p class="font-semibold text-slate-900">3. Stałe klucze VAPID i plik /opt/termojastrych/.env</p>
+            <p>Wygeneruj klucze poleceniem <code>npx web-push generate-vapid-keys</code> (lub w zakładce <em>Powiadomienia</em>) i zapisz w <code>.env</code>:</p>
+            <pre class="p-2.5 rounded bg-slate-900 text-slate-100 font-mono text-[11px] overflow-x-auto">PORT=4000
+VAPID_PUBLIC_KEY=WKLEJ_KLUCZ_PUBLICZNY
+VAPID_PRIVATE_KEY=WKLEJ_KLUCZ_PRYWATNY
+VAPID_SUBJECT=mailto:twoj@email.pl</pre>
+          </div>
+
+          <div class="p-3 rounded-lg bg-slate-50 border border-slate-200 space-y-1.5">
+            <p class="font-semibold text-slate-900">4. Usługa systemd 24/7 (/etc/systemd/system/termojastrych.service)</p>
+            <pre class="p-2.5 rounded bg-slate-900 text-slate-100 font-mono text-[11px] overflow-x-auto">[Unit]
+Description=TermoJastrych PN-EN 1264-4 + Web Push Server
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/termojastrych
+EnvironmentFile=/opt/termojastrych/.env
+ExecStart=/usr/bin/node /opt/termojastrych/dist/app/server/server.mjs
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target</pre>
+            <p class="font-mono text-[11px] text-slate-600">systemctl daemon-reload &amp;&amp; systemctl enable --now termojastrych</p>
+          </div>
+
+          <div class="p-3 rounded-lg bg-slate-50 border border-slate-200 space-y-1.5">
+            <p class="font-semibold text-slate-900">5. Prywatny HTTPS wyłącznie przez Tailscale (bez otwierania portów)</p>
+            <pre class="p-2.5 rounded bg-slate-900 text-slate-100 font-mono text-[11px] overflow-x-auto">curl -fsSL https://tailscale.com/install.sh | sh
+tailscale up
+tailscale serve --bg 4000</pre>
+            <p>Użyj <code>tailscale serve</code> (nie <code>funnel</code>), a w panelu Tailscale włącz <strong>MagicDNS</strong> i <strong>HTTPS Certificates</strong>. Otwórz w Androidzie (Edge / Opera) prywatny adres <code>https://termojastrych.twoja-siec.ts.net</code>, zainstaluj jako PWA, ustaw <em>Bateria → Bez ograniczeń</em>, a w stopce kliknij <strong>Usuń dane testowe / demo</strong>. Pełna wersja znajduje się w pliku <code>INSTALL_PROXMOX.md</code>.</p>
+          </div>
+        </div>
+
+        <button
+          type="button"
+          (click)="state.showServerInstallModal.set(false)"
+          class="mt-5 w-full py-2.5 text-xs font-semibold text-white bg-slate-900 rounded-lg hover:bg-slate-800 transition-colors"
+        >
+          Zamknij instrukcję
+        </button>
+      </div>
+    </div>
+  }
+</div>

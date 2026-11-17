@@ -1,0 +1,6 @@
+{
+  "name": "TermoJastrych — Wygrzewanie Podłogówki PN-EN 1264-4",
+  "description": "Aplikacja do planowania, monitorowania i dokumentowania wygrzewania jastrychu oraz ogrzewania podłogowego zgodnie z normą PN-EN 1264-4, z wykresami i systemem powiadomień.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
